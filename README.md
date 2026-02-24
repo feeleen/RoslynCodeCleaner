@@ -84,16 +84,6 @@ RoslynCodeCleaner.exe --profile methods-auto --sln "Other.slnx"
 | `--log-path <path>` | Custom log file path |
 | `--help`, `-h` | Show help message |
 
-## Available Profiles
-
-| Profile | Mode | Auto-Delete | Verify-Text | Description |
-|---------|------|-------------|-------------|-------------|
-| `types` | types | ❌ | ❌ | Basic types analysis |
-| `methods` | methods | ❌ | ❌ | Methods analysis |
-| `methods-auto` | methods | ✅ | ❌ | Methods + auto-delete |
-| `full` | methods | ✅ | ✅ | Full analysis with verification |
-| `quick` | types | ❌ | ❌ | Quick scan with minimal exclusions |
-
 ## Configuration (appsettings.json)
 
 ### Profile Structure
