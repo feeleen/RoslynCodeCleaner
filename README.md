@@ -33,7 +33,7 @@ dotnet build -c Release
 
 ```bash
 # Show help
-dotnet run -- --help
+RoslynCodeCleaner.exe --help
 
 # Analyze unused types (default mode)
 RoslynCodeCleaner.exe --sln "MySolution.sln"
