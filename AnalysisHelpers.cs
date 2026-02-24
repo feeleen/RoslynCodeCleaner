@@ -170,11 +170,11 @@ static class AnalysisHelpers
         static bool IsWordChar(char c) => char.IsLetterOrDigit(c) || c == '_';
     }
 
-	internal static bool IsIgnoredAttributes(string filePath)
+	internal static bool IsIgnoredAttributes(string attributeName)
 	{
 		return IgnoredAttributes.Any(attr =>
 		{
-			return attr.Equals(filePath, StringComparison.OrdinalIgnoreCase);
+			return attr.Equals(attributeName, StringComparison.OrdinalIgnoreCase);
 		});
 	}
 

@@ -240,7 +240,7 @@ static class UnusedTypesAnalyzerHandler
                         if (isClass)
                         {
                             if (typeSymbol.GetAttributes().Any(a =>
-								AnalysisHelpers.IsIgnoredAttributes(a.AttributeClass?.Name)))
+								AnalysisHelpers.IsIgnoredAttributes(a.AttributeClass?.Name ?? string.Empty)))
                             {
                                 Interlocked.Increment(ref skippedByBaseType);
                                 AnalysisHelpers.ReportProgress(ref processed, candidates.Count);
