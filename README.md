@@ -2,6 +2,10 @@
 
 A powerful experimental .NET tool for detecting and removing unused code (types, methods, and using directives) from your solutions using Roslyn analyzers.
 
+## Should I use it?
+
+If you have big legacy solutions with lot of a projects and tons of classes - then this tool may help you to remove unused classes. At least you may try it.
+
 ## ⚠️ Warning
 
 **Make sure you have committed all your changes before using this tool!** This tool modifies and deletes files automatically when using `--auto-delete` mode.
@@ -206,6 +210,7 @@ The tool creates a log file with detailed information about all found unused ite
 - **Reflection** — Types used via reflection may be falsely marked as unused (use `--verify-text`)
 - **Generated Code** — Auto-generated files (*.g.cs, *.Designer.cs) are skipped
 - **External Packages** — Does not analyze NuGet package dependencies
+- **Multiple Launches Needed For Removing Unused Types** - It can't remove all in one pass. You shoult run it multiple times. 
 
 ## Contributing
 
