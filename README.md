@@ -4,7 +4,7 @@ A powerful experimental .NET tool for detecting and removing unused code (types,
 
 ## Should I use it?
 
-If you have big legacy solutions with lot of a projects and tons of classes - then this tool may help you to remove unused classes. At least you may try it.
+If you have large legacy solutions with a lot of projects and tons of classes — this tool can help you remove unused ones. Give it a try!
 
 ## ⚠️ Warning
 
