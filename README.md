@@ -33,25 +33,25 @@ dotnet build -c Release
 
 ```bash
 # Show help
-dotnet run -- --help
+RoslynCodeCleaner.exe --help
 
 # Analyze unused types (default mode)
-dotnet run -- --sln "MySolution.sln"
+RoslynCodeCleaner.exe --sln "MySolution.sln"
 
 # Analyze unused methods
-dotnet run -- --sln "MySolution.sln" --mode methods
+RoslynCodeCleaner.exe --sln "MySolution.sln" --mode methods
 
 # Auto-delete unused code
-dotnet run -- --sln "MySolution.sln" --mode methods --auto-delete
+RoslynCodeCleaner.exe --sln "MySolution.sln" --mode methods --auto-delete
 
 # With text verification (excludes string literal matches)
-dotnet run -- --sln "MySolution.sln" --mode methods --verify-text --auto-delete
+RoslynCodeCleaner.exe --sln "MySolution.sln" --mode methods --verify-text --auto-delete
 
 # Clean up unused using directives only
-dotnet run -- --sln "MySolution.sln" --mode usings
+RoslynCodeCleaner.exe --sln "MySolution.sln" --mode usings
 
 # Simplify code (Roslyn Reduce API)
-dotnet run -- --sln "MySolution.sln" --mode reduce
+RoslynCodeCleaner.exe --sln "MySolution.sln" --mode reduce
 ```
 
 ### Using Profiles
@@ -60,16 +60,16 @@ Profiles allow you to save and reuse configurations:
 
 ```bash
 # Use predefined profile
-dotnet run -- --profile types
+RoslynCodeCleaner.exe --profile types
 
 # Use methods-auto profile (methods + auto-delete)
-dotnet run -- --profile methods-auto
+RoslynCodeCleaner.exe --profile methods-auto
 
 # Use full profile (methods + auto-delete + verify-text)
-dotnet run -- --profile full
+RoslynCodeCleaner.exe --profile full
 
 # Override profile settings
-dotnet run -- --profile methods-auto --sln "Other.slnx"
+RoslynCodeCleaner.exe --profile methods-auto --sln "Other.slnx"
 ```
 
 ## Command-Line Options
