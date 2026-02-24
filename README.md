@@ -1,6 +1,6 @@
 # Roslyn Code Cleaner
 
-A powerful .NET tool for detecting and removing unused code (types, methods, and using directives) from your solutions using Roslyn analyzers.
+A powerful experimental .NET tool for detecting and removing unused code (types, methods, and using directives) from your solutions using Roslyn analyzers.
 
 ## ⚠️ Warning
 
