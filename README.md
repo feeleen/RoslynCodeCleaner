@@ -210,7 +210,8 @@ The tool creates a log file with detailed information about all found unused ite
 - **Reflection** — Types used via reflection may be falsely marked as unused (use `--verify-text`)
 - **Generated Code** — Auto-generated files (*.g.cs, *.Designer.cs) are skipped
 - **External Packages** — Does not analyze NuGet package dependencies
-- **Multiple Launches Needed For Removing Unused Types** - It can't remove all in one pass. You shoult run it multiple times. 
+- **Multiple Launches Needed For Removing Unused Types** - It can't remove all in one pass. You should run it multiple times for best results.
+- **It May Produce False Positives** - Check results carefully, use "ignore" settings and patterns in appsettings.json according to your code base
 
 ## Contributing
 
