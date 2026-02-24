@@ -80,7 +80,7 @@ RoslynCodeCleaner.exe --profile methods-auto --sln "Other.slnx"
 | `--sln <path>` | Path to solution file (.sln or .slnx) |
 | `--mode <type>` | Analysis mode: `methods`, `types`, `usings`, or `reduce` |
 | `--auto-delete` | Automatically delete found unused code |
-| `--verify-text` | Exclude items found in string literals |
+| `--verify-text` | Experimental feature. Try to exclude items found in string literals |
 | `--log-path <path>` | Custom log file path |
 | `--help`, `-h` | Show help message |
 
@@ -102,6 +102,9 @@ RoslynCodeCleaner.exe --profile methods-auto --sln "Other.slnx"
       "IgnoredFolders": [
         "ExternalComponents",
         "Tests"
+      ],
+      "IgnoredAttributes": [
+        "MyCustomAttribute"
       ],
       "SkipBaseTypeNames": [
         "Controller", "DbContext", "Migration"
