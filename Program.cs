@@ -114,9 +114,12 @@ class Program
         Console.WriteLine($"[INFO] Log file: {logPath}");
         if (autoDelete)
         {
+            var originalColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(methodsMode
                 ? "[INFO] Auto-delete mode ENABLED — unused methods will be removed from files"
                 : "[INFO] Auto-delete mode ENABLED — files where ALL types are unused will be deleted");
+            Console.ForegroundColor = originalColor;
         }
 
         if (verifyText)
