@@ -31,6 +31,8 @@ dotnet build -c Release
 
 ### Basic Commands
 
+With basic usage - There is no filtering, it works as is.. Don't use it for complex projects. Use profiles instead.
+
 ```bash
 # Show help
 RoslynCodeCleaner.exe --help
@@ -56,7 +58,7 @@ RoslynCodeCleaner.exe --sln "MySolution.sln" --mode reduce
 
 ### Using Profiles
 
-Profiles allow you to save and reuse configurations:
+Profiles allow you to save and reuse configurations, apply custom filtering, defined in `appsettings.json`:
 
 ```bash
 # Use predefined profile
