@@ -7,13 +7,6 @@ using System.Diagnostics;
 
 static class UnusedTypesAnalyzerHandler
 {
-    private static readonly AdditionalIgnorePatterns? _additionalIgnorePatterns;
-
-    static UnusedTypesAnalyzerHandler()
-    {
-        _additionalIgnorePatterns = AnalysisHelpers.GetAdditionalIgnorePatterns();
-    }
-
     internal static async Task<List<(string name, string filePath, int lineNumber, string fullLine, string action)>> FindAsync(
         AnalysisContext context, StreamWriter resultWriter, bool verifyText = false)
     {
@@ -57,7 +50,7 @@ static class UnusedTypesAnalyzerHandler
                         if (typeDecl is ClassDeclarationSyntax)
                         {
                             var name = typeSymbol.Name;
-                            if (_additionalIgnorePatterns?.ShouldIgnore(name) == true)
+                            if (AnalysisHelpers.AdditionalIgnorePatterns?.ShouldIgnore(name) == true)
                                 continue;
                         }
 

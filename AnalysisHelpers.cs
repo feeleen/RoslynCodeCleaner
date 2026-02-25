@@ -22,25 +22,17 @@ static class AnalysisHelpers
     static AnalysisHelpers()
     {
         _cachedSettings = LoadSettings();
-        // Initialize default values from settings
-        ResetToDefaults();
     }
 
     /// <summary>
-    /// Resets exclusions to default values from appsettings.json
+    /// Resets exclusions to empty defaults (no profile)
     /// </summary>
     internal static void ResetToDefaults()
     {
-        IgnoredFolders = _cachedSettings.IgnoredFolders ?? [];
-        IgnoredAttributes = _cachedSettings.IgnoredAttributes ?? [];
-        SkipBaseTypeNames = _cachedSettings.SkipBaseTypeNames ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        AdditionalIgnorePatterns = _cachedSettings.AdditionalIgnorePatterns;
-
-        // Initialize AdditionalIgnorePatterns
-        if (AdditionalIgnorePatterns != null)
-        {
-            AdditionalIgnorePatterns.Initialize();
-        }
+        IgnoredFolders = [];
+        IgnoredAttributes = [];
+        SkipBaseTypeNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        AdditionalIgnorePatterns = null;
     }
 
     /// <summary>
@@ -85,9 +77,6 @@ static class AnalysisHelpers
     }
 
     internal static Settings GetSettings() => _cachedSettings;
-
-    internal static AdditionalIgnorePatterns? GetAdditionalIgnorePatterns()
-        => _cachedSettings.AdditionalIgnorePatterns;
 
     internal static string GetLogFilePath(string? solutionPath = null)
     {
