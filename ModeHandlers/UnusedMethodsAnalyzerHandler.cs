@@ -259,6 +259,11 @@ static class UnusedMethodsAnalyzerHandler
         if (symbol.DeclaredAccessibility == Accessibility.Public && IsControllerAction(symbol))
             return false;
 
+        // Skip methods in classes whose name matches AdditionalIgnorePatterns
+        if (symbol.ContainingType != null
+            && AnalysisHelpers.AdditionalIgnorePatterns?.ShouldIgnore(symbol.ContainingType.Name) == true)
+            return false;
+
         return true;
     }
 
