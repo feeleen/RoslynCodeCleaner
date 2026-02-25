@@ -50,7 +50,12 @@ static class UnusedTypesAnalyzerHandler
                         if (typeDecl is ClassDeclarationSyntax)
                         {
                             var name = typeSymbol.Name;
-                            if (AnalysisHelpers.AdditionalIgnorePatterns?.ShouldIgnore(name) == true)
+                            // Whitelist: if configured, only analyze matching classes
+                            if (AnalysisHelpers.AdditionalIncludePatterns != null
+                                && !AnalysisHelpers.AdditionalIncludePatterns.Matches(name))
+                                continue;
+                            // Blacklist: skip matching classes
+                            if (AnalysisHelpers.AdditionalIgnorePatterns?.Matches(name) == true)
                                 continue;
                         }
 
@@ -582,7 +587,7 @@ static class UnusedTypesAnalyzerHandler
     /// Forward pass: #endregion with no matching #region above → orphaned.
     /// Backward pass: #region with no matching #endregion below → orphaned.
     /// </summary>
-    private static string CleanupOrphanedRegions(string text)
+    internal static string CleanupOrphanedRegions(string text)
     {
         var lines = text.Split('\n');
         var linesToRemove = new HashSet<int>();

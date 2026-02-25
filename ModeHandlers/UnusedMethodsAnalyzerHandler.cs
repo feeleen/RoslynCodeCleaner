@@ -259,9 +259,14 @@ static class UnusedMethodsAnalyzerHandler
         if (symbol.DeclaredAccessibility == Accessibility.Public && IsControllerAction(symbol))
             return false;
 
-        // Skip methods in classes whose name matches AdditionalIgnorePatterns
+        // Whitelist: if configured, only analyze methods in matching classes
+        if (symbol.ContainingType != null && AnalysisHelpers.AdditionalIncludePatterns != null
+            && !AnalysisHelpers.AdditionalIncludePatterns.Matches(symbol.ContainingType.Name))
+            return false;
+
+        // Blacklist: skip methods in matching classes
         if (symbol.ContainingType != null
-            && AnalysisHelpers.AdditionalIgnorePatterns?.ShouldIgnore(symbol.ContainingType.Name) == true)
+            && AnalysisHelpers.AdditionalIgnorePatterns?.Matches(symbol.ContainingType.Name) == true)
             return false;
 
         return true;
@@ -298,6 +303,101 @@ static class UnusedMethodsAnalyzerHandler
             : "";
         var paramList = string.Join(", ", symbol.Parameters.Select(p => p.Type.Name));
         return $"{typeName}.{symbol.Name}{typeParams}({paramList})";
+    }
+
+    /// <summary>
+    /// Removes syntax nodes while preserving #region/#endregion directives
+    /// from their leading trivia by transferring them to the next sibling node.
+    /// </summary>
+    static SyntaxNode? RemoveNodesPreservingDirectives(SyntaxNode root, List<SyntaxNode> nodesToRemove)
+    {
+        if (nodesToRemove.Count == 0)
+            return root;
+
+        // Annotate nodes so we can track them across tree modifications
+        var annotation = new SyntaxAnnotation("remove");
+        root = root.ReplaceNodes(nodesToRemove, (_, rewritten) =>
+            rewritten.WithAdditionalAnnotations(annotation));
+
+        // Collect directive trivia to transfer from removed nodes to their next sibling
+        var annotatedNodes = root.GetAnnotatedNodes(annotation).ToList();
+        var transfers = new Dictionary<SyntaxNode, List<SyntaxTrivia>>();
+
+        foreach (var node in annotatedNodes)
+        {
+            if (node is not MemberDeclarationSyntax memberNode)
+                continue;
+
+            var leadingTrivia = node.GetLeadingTrivia();
+            var directives = new List<SyntaxTrivia>();
+
+            for (int i = 0; i < leadingTrivia.Count; i++)
+            {
+                if (leadingTrivia[i].IsKind(SyntaxKind.RegionDirectiveTrivia) ||
+                    leadingTrivia[i].IsKind(SyntaxKind.EndRegionDirectiveTrivia))
+                {
+                    directives.Add(leadingTrivia[i]);
+                    // Include the following EndOfLine if present
+                    if (i + 1 < leadingTrivia.Count &&
+                        leadingTrivia[i + 1].IsKind(SyntaxKind.EndOfLineTrivia))
+                    {
+                        directives.Add(leadingTrivia[i + 1]);
+                    }
+                }
+            }
+
+            if (directives.Count == 0)
+                continue;
+
+            // Find next non-removed sibling to receive the directives
+            var parent = node.Parent;
+            if (parent == null)
+                continue;
+
+            var siblings = parent.ChildNodes().OfType<MemberDeclarationSyntax>().ToList();
+            var idx = siblings.IndexOf(memberNode);
+            if (idx < 0)
+                continue;
+
+            SyntaxNode? target = null;
+            for (int j = idx + 1; j < siblings.Count; j++)
+            {
+                if (!siblings[j].HasAnnotation(annotation))
+                {
+                    target = siblings[j];
+                    break;
+                }
+            }
+
+            // No forward target → directive lost; CleanupOrphanedRegions handles the counterpart
+            if (target == null)
+                continue;
+
+            if (!transfers.TryGetValue(target, out var list))
+            {
+                list = [];
+                transfers[target] = list;
+            }
+            list.AddRange(directives);
+        }
+
+        // Transfer directive trivia to target nodes
+        if (transfers.Count > 0)
+        {
+            root = root.ReplaceNodes(transfers.Keys, (original, rewritten) =>
+            {
+                if (!transfers.TryGetValue(original, out var directives))
+                    return rewritten;
+
+                var newTrivia = new List<SyntaxTrivia>(directives);
+                newTrivia.AddRange(rewritten.GetLeadingTrivia());
+                return rewritten.WithLeadingTrivia(newTrivia);
+            });
+        }
+
+        // Remove annotated nodes (KeepNoTrivia is safe now — directives already transferred)
+        var toRemove = root.GetAnnotatedNodes(annotation).ToList();
+        return root.RemoveNodes(toRemove, SyntaxRemoveOptions.KeepNoTrivia);
     }
 
     /// <summary>
@@ -342,11 +442,12 @@ static class UnusedMethodsAnalyzerHandler
                 if (nodesToRemove.Count == 0)
                     continue;
 
-                var newRoot = root.RemoveNodes(nodesToRemove, SyntaxRemoveOptions.KeepNoTrivia);
+                var newRoot = RemoveNodesPreservingDirectives(root, nodesToRemove);
                 if (newRoot == null)
                     continue;
 
                 var newText = newRoot.ToFullString();
+                newText = UnusedTypesAnalyzerHandler.CleanupOrphanedRegions(newText);
                 while (newText.Contains("\r\n\r\n\r\n"))
                     newText = newText.Replace("\r\n\r\n\r\n", "\r\n\r\n");
                 while (newText.Contains("\n\n\n"))

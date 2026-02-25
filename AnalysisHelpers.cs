@@ -15,7 +15,8 @@ static class AnalysisHelpers
     internal static List<string> IgnoredFolders = [];
     internal static List<string> IgnoredAttributes = [];
     internal static HashSet<string> SkipBaseTypeNames = new(StringComparer.OrdinalIgnoreCase);
-    internal static AdditionalIgnorePatterns? AdditionalIgnorePatterns;
+    internal static NamePatterns? AdditionalIgnorePatterns;
+    internal static NamePatterns? AdditionalIncludePatterns;
 
     private const string settingsFileName = "appsettings.json";
 
@@ -33,6 +34,7 @@ static class AnalysisHelpers
         IgnoredAttributes = [];
         SkipBaseTypeNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         AdditionalIgnorePatterns = null;
+        AdditionalIncludePatterns = null;
     }
 
     /// <summary>
@@ -44,11 +46,10 @@ static class AnalysisHelpers
         IgnoredAttributes = profile.IgnoredAttributes ?? [];
         SkipBaseTypeNames = profile.SkipBaseTypeNames ?? new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         AdditionalIgnorePatterns = profile.AdditionalIgnorePatterns;
-        
-        if (AdditionalIgnorePatterns != null)
-        {
-            AdditionalIgnorePatterns.Initialize();
-        }
+        AdditionalIncludePatterns = profile.AdditionalIncludePatterns;
+
+        AdditionalIgnorePatterns?.Initialize();
+        AdditionalIncludePatterns?.Initialize();
     }
 
     private static Settings LoadSettings()

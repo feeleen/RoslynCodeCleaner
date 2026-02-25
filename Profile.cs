@@ -14,5 +14,6 @@ internal class Profile
 	public List<string>? IgnoredFolders { get; set; }
 	public List<string>? IgnoredAttributes { get; set; }
 	public HashSet<string>? SkipBaseTypeNames { get; set; }
-	public AdditionalIgnorePatterns? AdditionalIgnorePatterns { get; set; }
+	public NamePatterns? AdditionalIgnorePatterns { get; set; }
+	public NamePatterns? AdditionalIncludePatterns { get; set; }
 }

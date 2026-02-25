@@ -103,7 +103,7 @@ RoslynCodeCleaner.exe --profile methods-auto --sln "Other.slnx"
 ```json
 {
   "ActiveProfile": "types",
-  
+
   "Profiles": {
     "types": {
       "SolutionPath": "C:\\Projects\\MySolution.slnx",
@@ -123,18 +123,15 @@ RoslynCodeCleaner.exe --profile methods-auto --sln "Other.slnx"
         "EndsWith": [ "Mapper", "Profile", "Exception" ],
         "Contains": [],
         "Regexes": []
+      },
+      "AdditionalIncludePatterns": {
+        "StartsWith": [],
+        "EndsWith": [ "Repository", "Handler" ],
+        "Contains": [],
+        "Regexes": []
       }
     }
-  },
-  
-  "IgnoredFolders": [
-    "ExternalComponents",
-    "Tests"
-  ],
-  "SkipBaseTypeNames": [
-    "Job", "IJob", "BackgroundService",
-    "ControllerBase", "Controller", "ApiController"
-  ]
+  }
 }
 ```
 
@@ -143,19 +140,23 @@ RoslynCodeCleaner.exe --profile methods-auto --sln "Other.slnx"
 | Setting | Description |
 |---------|-------------|
 | `ActiveProfile` | Default profile to use when `--profile` is not specified |
-| `SolutionPath` | Default solution path (can be overridden by `--sln`) |
+| `SolutionPath` | Fallback solution path (can be overridden by `--sln`) |
 | `IgnoredFolders` | Folders to skip during analysis |
+| `IgnoredAttributes` | Attributes that mark types to skip |
 | `SkipBaseTypeNames` | Base types that are always skipped (DI/infrastructure types) |
-| `AdditionalIgnorePatterns` | Advanced pattern matching for type names |
+| `AdditionalIgnorePatterns` | Blacklist — skip classes matching these name patterns |
+| `AdditionalIncludePatterns` | Whitelist — only analyze classes matching these name patterns |
 
-### Additional Ignore Patterns
+When both `AdditionalIncludePatterns` and `AdditionalIgnorePatterns` are set, the whitelist is applied first (only matching classes are considered), then the blacklist further excludes from that set. In methods mode, both filters apply to the **containing class name**, not the method name.
+
+### Name Patterns (used by both Ignore and Include)
 
 | Pattern | Description | Example |
 |---------|-------------|---------|
-| `StartsWith` | Skip types starting with these prefixes | `["I", "Action"]` |
-| `EndsWith` | Skip types ending with these suffixes | `["Mapper", "Exception"]` |
-| `Contains` | Skip types containing these substrings | `["Helper", "Utility"]` |
-| `Regexes` | Skip types matching regex patterns | `["^.*Dto$", "^.*ViewModel$"]` |
+| `StartsWith` | Match types starting with these prefixes | `["Action", "Base"]` |
+| `EndsWith` | Match types ending with these suffixes | `["Service", "Repository"]` |
+| `Contains` | Match types containing these substrings | `["Helper", "Utility"]` |
+| `Regexes` | Match types by regex patterns | `["^.*Dto$", "^.*ViewModel$"]` |
 
 ## Output
 
